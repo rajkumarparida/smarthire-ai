@@ -4,6 +4,10 @@ const Job = require('../models/Job');
 exports.createJob = async (req, res) => {
   try {
     const job = await Job.create({ ...req.body, postedBy: req.user.id });
+
+    // ── Trigger email to all candidates (non-blocking) ──
+    notifyAllCandidates(job);  // no await — runs in background
+
     res.status(201).json(job);
   } catch (err) {
     res.status(500).json({ message: err.message });
