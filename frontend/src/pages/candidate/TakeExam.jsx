@@ -18,13 +18,12 @@ export default function TakeExam() {
     }).catch(() => alert('No exam available for this job yet.'));
   }, [jobId]);
 
-  // Countdown timer
   useEffect(() => {
-    if (timeLeft === null || result) return;
-    if (timeLeft <= 0) { handleSubmit(); return; }
-    const t = setTimeout(() => setTimeLeft(t => t - 1), 1000);
-    return () => clearTimeout(t);
-  }, [timeLeft, result]);
+  if (timeLeft === null || result) return;
+  if (timeLeft <= 0) { handleSubmit(); return; }
+  const t = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+  return () => clearTimeout(t);
+}, [timeLeft, result]);
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60).toString().padStart(2, '0');

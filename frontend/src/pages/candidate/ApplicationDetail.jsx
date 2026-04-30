@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 
-const stageList = ['applied', 'exam', 'interview', 'selected'];
 
 export default function ApplicationDetail() {
   const { appId }       = useParams();

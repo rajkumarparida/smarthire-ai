@@ -150,12 +150,6 @@ export default function RecruiterDashboard() {
   );
 }
 
-// helper
-const jobDot = (active) => ({
-  width: 10, height: 10, borderRadius: '50%', flexShrink: 0, marginTop: 6,
-  background: active ? '#16a34a' : '#94a3b8',
-});
-
 const styles = {
   container:   { padding: 28, maxWidth: 960, margin: '0 auto' },
   center:      { textAlign: 'center', marginTop: 80, fontSize: 18 },
