@@ -18,6 +18,7 @@ export default function TakeExam() {
     }).catch(() => alert('No exam available for this job yet.'));
   }, [jobId]);
 
+// eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
   if (timeLeft === null || result) return;
   if (timeLeft <= 0) { handleSubmit(); return; }
