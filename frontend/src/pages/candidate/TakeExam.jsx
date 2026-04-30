@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 
@@ -18,13 +18,20 @@ export default function TakeExam() {
     }).catch(() => alert('No exam available for this job yet.'));
   }, [jobId]);
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+useEffect(() => {
   if (timeLeft === null || result) return;
-  if (timeLeft <= 0) { handleSubmit(); return; }
-  const t = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+
+  if (timeLeft <= 0) {
+    handleSubmit();
+    return;
+  }
+
+  const t = setTimeout(() => {
+    setTimeLeft(prev => prev - 1);
+  }, 1000);
+
   return () => clearTimeout(t);
-}, [timeLeft, result]);
+}, [timeLeft, result, handleSubmit]);
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60).toString().padStart(2, '0');
@@ -37,17 +44,17 @@ export default function TakeExam() {
     setAnswers(prev => ({ ...prev, [qIndex]: optIndex }));
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const res = await api.post(`/exam/${jobId}/submit`, { answers });
-      setResult(res.data);
-    } catch (err) {
-      alert(err.response?.data?.message || 'Submission failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSubmit = useCallback(async () => {
+  setLoading(true);
+  try {
+    const res = await api.post(`/exam/${jobId}/submit`, { answers });
+    setResult(res.data);
+  } catch (err) {
+    alert(err.response?.data?.message || 'Submission failed');
+  } finally {
+    setLoading(false);
+  }
+}, [jobId, answers]);
 
   if (!exam) return <p style={styles.center}>Loading exam...</p>;
 
