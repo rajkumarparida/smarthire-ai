@@ -44,7 +44,7 @@ useEffect(() => {
     setAnswers(prev => ({ ...prev, [qIndex]: optIndex }));
   };
 
-  const handleSubmit = useCallback(async () => {
+const handleSubmit = useCallback(async () => {
   setLoading(true);
   try {
     const res = await api.post(`/exam/${jobId}/submit`, { answers });
