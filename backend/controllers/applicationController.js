@@ -11,20 +11,26 @@ exports.applyJob = async (req, res) => {
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ message: 'Job not found' });
 
-    const existing = await Application.findOne({ job: jobId, candidate: req.user.id });
-    if (existing) return res.status(400).json({ message: 'Already applied to this job' });
+    // ── Explicit check before insert ──
+    const existing = await Application.findOne({
+      job: jobId,
+      candidate: req.user.id
+    });
+    if (existing)
+      return res.status(400).json({
+        message: 'Already Applied',
+        alreadyApplied: true,   // flag for frontend
+        stage: existing.stage,
+      });
 
     let resumeText = '';
     let resumeUrl  = '';
-
     if (req.file) {
       resumeUrl  = `/uploads/${req.file.filename}`;
       resumeText = fs.readFileSync(req.file.path, 'utf-8');
     }
 
-    // ── Run Full AI Resume Analysis ──
-    const analysis = analyzeResume(resumeText, job.requiredSkills);
-
+    const analysis    = analyzeResume(resumeText, job.requiredSkills);
     const application = await Application.create({
       job:        jobId,
       candidate:  req.user.id,
@@ -34,11 +40,17 @@ exports.applyJob = async (req, res) => {
     });
 
     res.status(201).json({
-      message:    'Applied successfully',
-      analysis,   // full report sent to frontend
+      message:  'Applied successfully',
+      analysis,
       application,
     });
   } catch (err) {
+    // ── MongoDB duplicate key fallback ──
+    if (err.code === 11000)
+      return res.status(400).json({
+        message: 'Already Applied',
+        alreadyApplied: true,
+      });
     res.status(500).json({ message: err.message });
   }
 };

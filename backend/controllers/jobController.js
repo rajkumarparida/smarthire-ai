@@ -1,4 +1,5 @@
 const Job = require('../models/Job');
+const { notifyAllCandidates } = require('../services/emailService');
 
 // Recruiter: Create a job
 exports.createJob = async (req, res) => {

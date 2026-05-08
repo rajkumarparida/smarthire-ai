@@ -23,6 +23,10 @@ app.use('/api/jobs',         require('./routes/jobRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/uploads', require('express').static('uploads'));
 app.use('/api/exam', require('./routes/examRoutes'));
+app.use('/api/onboarding', require('./routes/profileRoutes'));
+app.use('/api/places', require('./routes/placesRoutes'));
+app.use('/api/interview', require('./routes/interviewRoutes'));
+app.use('/api/hr', require('./routes/hrRoutes'));
 app.get('/', (req, res) => res.send('SmartHire AI Backend Running'));
 
 
